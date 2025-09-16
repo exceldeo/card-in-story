@@ -16,6 +16,12 @@ export default function RegisterForm() {
     values: RegisterFormValues,
     { setSubmitting }: FormikHelpers<RegisterFormValues>
   ) => {
+    if (values.confirmPassword !== values.password) {
+      alert("Passwords do not match");
+      setSubmitting(false);
+      return;
+    }
+
     clearError();
     const { confirmPassword, ...userData } = values;
     register(userData);

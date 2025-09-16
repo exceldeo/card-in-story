@@ -6,6 +6,13 @@ export async function POST(request) {
 
     // In a real application, you would check if user exists and create a new user
     // For demo purposes, we'll just create a token
+    if (!name || !email || !password) {
+      return NextResponse.json(
+        { success: false, message: "All fields are required" },
+        { status: 400 }
+      );
+    }
+
     const token = jwt.sign({ userId: 1, email, name }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
@@ -21,7 +28,7 @@ export async function POST(request) {
     });
   } catch (error) {
     return NextResponse.json(
-      { success: false, message: "Server error" },
+      { success: false, message: error.message },
       { status: 500 }
     );
   }
