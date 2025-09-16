@@ -1,4 +1,6 @@
-import React, { useState, useRef, useEffect } from "react";
+"use client";
+
+import React, { useState, useRef } from "react";
 import { TriviaQuestion, getCategoryById } from "@/data/triviaData";
 import { cn } from "@/utils/cn";
 
@@ -18,7 +20,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState(0);
   const [rotation, setRotation] = useState(0);
-  const cardRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLButtonElement>(null);
   const startX = useRef(0);
 
   const category = getCategoryById(question.category);
@@ -74,8 +76,16 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
     handleEnd();
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "ArrowLeft") {
+      onSwipeLeft?.();
+    } else if (e.key === "ArrowRight") {
+      onSwipeRight?.();
+    }
+  };
+
   return (
-    <div
+    <button
       ref={cardRef}
       className={cn(
         "trivia-card cursor-grab active:cursor-grabbing select-none",
@@ -84,6 +94,8 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
         isDragging && "transition-none",
         className
       )}
+      type="button"
+      aria-label="Swipe card"
       style={{
         transform: `translateX(${dragOffset}px) rotate(${rotation}deg)`,
         opacity: isDragging ? 0.9 : 1,
@@ -92,6 +104,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
+      onKeyDown={handleKeyDown}
     >
       {/* Category Badge */}
       <div className="mb-6">
@@ -134,6 +147,6 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({
           </div>
         </div>
       </div>
-    </div>
+    </button>
   );
 };
